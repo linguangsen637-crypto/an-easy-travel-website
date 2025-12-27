@@ -1,0 +1,22 @@
+# Server Configuration
+PORT=3000
+NODE_ENV=development
+
+# JWT Secret Key
+# ⚠️ CRITICAL: Change this to a secure random string in production!
+# Generate one with: node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production-please
+
+# Database (SQLite by default, no configuration needed)
+# DB_PATH=./server/db.sqlite
+
+# CORS Configuration (optional)
+# CORS_ORIGIN=https://yourdomain.com
+
+# Rate Limiting (optional, defaults shown)
+# RATE_LIMIT_WINDOW_MS=900000
+# RATE_LIMIT_MAX_REQUESTS=100
+# AUTH_RATE_LIMIT_MAX=5
+
+# Logging Level (optional)
+# LOG_LEVEL=info

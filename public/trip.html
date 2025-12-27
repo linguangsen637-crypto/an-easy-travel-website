@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Trip Details - Travel Helper</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="trip-detail">
+    <a href="index.html">← Back to trips</a>
+    <div id="content">
+      <div class="loading-container" style="text-align: center; padding: 60px 20px;">
+        <div class="loading" style="border-color: #0077cc; border-top-color: transparent; width: 40px; height: 40px; border-width: 4px;"></div>
+        <p style="margin-top: 20px; color: #7f8c8d;">Loading trip details...</p>
+      </div>
+    </div>
+  </main>
+  
+  <script>
+    async function loadTripDetail() {
+      const params = new URLSearchParams(location.search);
+      const id = params.get('id');
+      const contentEl = document.getElementById('content');
+
+      if (!id) {
+        contentEl.innerHTML = `
+          <div class="error-state">
+            <h2>❌ No Trip ID Provided</h2>
+            <p>Please select a trip from the list.</p>
+            <a href="index.html" style="margin-top: 20px; display: inline-block; padding: 12px 24px; background: #0077cc; color: white; text-decoration: none; border-radius: 8px;">Go Back</a>
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        const token = localStorage.getItem('authToken');
+        
+        if (!token) {
+          window.location.href = 'index.html';
+          return;
+        }
+
+        const response = await fetch(`/api/trip/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+            return;
+          }
+          throw new Error('Failed to load trip');
+        }
+
+        const trip = await response.json();
+
+        contentEl.innerHTML = `
+          <div class="trip-card">
+            <h1>${escapeHtml(trip.title)}</h1>
+            <div class="trip-meta">
+              <div class="trip-location">
+                <strong>📍 Destination:</strong> ${escapeHtml(trip.location)}
+              </div>
+              <div class="trip-price">💰 $${Number(trip.price).toFixed(2)}</div>
+            </div>
+            <div class="trip-desc">
+              <strong>Description:</strong>
+              <div style="margin-top: 12px; line-height: 1.8;">
+                ${trip.description ? escapeHtml(trip.description) : '<em style="color: #95a5a6;">No description provided.</em>'}
+              </div>
+            </div>
+            ${trip.created_at ? `
+              <div style="margin-top: 32px; padding-top: 24px; border-top: 2px solid #e0e0e0; color: #7f8c8d; font-size: 0.9rem;">
+                <p><strong>Created:</strong> ${new Date(trip.created_at).toLocaleString()}</p>
+                ${trip.updated_at && trip.updated_at !== trip.created_at ? `
+                  <p style="margin-top: 8px;"><strong>Last Updated:</strong> ${new Date(trip.updated_at).toLocaleString()}</p>
+                ` : ''}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      } catch (error) {
+        console.error('Error loading trip:', error);
+        contentEl.innerHTML = `
+          <div class="error-state">
+            <h2>❌ Unable to Load Trip</h2>
+            <p style="color: #e74c3c; margin-top: 12px;">${error.message}</p>
+            <a href="index.html" style="margin-top: 20px; display: inline-block; padding: 12px 24px; background: #0077cc; color: white; text-decoration: none; border-radius: 8px;">Go Back</a>
+          </div>
+        `;
+      }
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    loadTripDetail();
+  </script>
+</body>
+</html>

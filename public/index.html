@@ -1,0 +1,114 @@
+<!-- ...existing code... -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Travel Helper</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ====================== 登录/注册界面 ====================== -->
+
+  <div id="auth-container" class="auth-container">
+    <div class="login-box">
+      <h2>Travel Helper</h2>
+
+      <!-- Sign In -->
+ 
+      <section id="login-section" class="auth-section">
+        <form id="login-form" class="auth-form">
+          <input id="email" type="email" placeholder="Email" required>
+          <input id="password" type="password" placeholder="Password" required>
+          <button type="submit">Sign In</button>
+        </form>
+        <div id="login-result" class="auth-result"></div>
+        <p class="switch">Don't have an account? <a href="#" id="show-register">Sign Up</a></p>
+      </section>
+
+      <!-- Sign Up (hidden by default) -->
+      <section id="register-section" class="auth-section" style="display:none" aria-hidden="true">
+        <form id="register-form" class="auth-form">
+          <input id="reg-email" type="email" placeholder="Email" required>
+          <input id="reg-password" type="password" placeholder="Password" required>
+          <button type="submit">Create Account</button>
+        </form>
+        <div id="register-result" class="auth-result"></div>
+        <p class="switch">Already have an account? <a href="#" id="show-login">Sign In</a></p>
+      </section>
+    </div>
+  </div>
+
+  <!-- ====================== 主 ====================== -->
+  <!--
+     Main app area (displayed after successful login).
+  -->
+  <div id="main-app" class="layout" style="display:none">
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+
+    <aside class="sidebar" id="sidebar">
+      <h2>Macao</h2>
+      <p class="tagline">Plan your journey!!!</p>
+      <nav>
+        <ul>
+          <li><a href="#" data-target="trips-section">My Trips</a></li>
+          <li><a href="#" data-target="create-section">Create Trip</a></li>
+          <li><a href="#" data-target="converter-section">Currency Converter</a></li>
+        </ul>
+      </nav>
+      <div class="user-info">
+        <p id="user-email">Loading...</p>
+        <button class="logout">Sign Out</button>
+      </div>
+    </aside>
+    
+    <!-- backdrop 用于在移动视图中遮罩主内容，点击可关闭侧边栏 -->
+    <div id="backdrop" class="backdrop" aria-hidden="true"></div>
+    <div class="content">
+      <header>
+        <div class="header-left">
+          <h1>Travel Helper</h1>
+          <p>Trip list + Simple currency converter</p>
+        </div>
+        <div class="language-switcher">
+          <button type="button" onclick="setLanguage('en')">EN</button>
+          <button type="button" onclick="setLanguage('zh')">中文</button>
+        </div>
+      </header>
+
+      <main>
+        <section id="trips-section" class="page-view"><h2>Trip List</h2><div id="trips">Loading...</div></section>
+        <section id="create-section" class="page-view">
+          <h2>Create a New Trip</h2>
+          <form id="create-trip-form">
+            <div><label for="title">Title</label><input id="title" required></div>
+            <div><label for="location">Location</label><input id="location" required></div>
+            <div><label for="price">Price (USD)</label><input id="price" type="number" step="0.01" required></div>
+            <div><label for="description">Description</label><textarea id="description"></textarea></div>
+            <button type="submit">Create Trip</button>
+            <div id="create-result"></div>
+          </form>
+        </section>
+        <section id="converter-section" class="page-view">
+          <h2>Currency Converter</h2>
+          <div class="converter">
+            <input id="amount" type="number" value="1" min="0" step="any">
+            <select id="from-currency"></select> → <select id="to-currency"></select>
+            <button id="convert">Convert</button>
+          </div>
+          <div id="converted">--</div>
+          <div class="chart-wrap">
+            <h3 id="chart-title">Exchange Rate Trend</h3>
+            <canvas id="rate-chart" width="600" height="300"></canvas>
+          </div>
+        </section>
+      </main>
+      <footer><small>© 2025 Travel Helper</small></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
