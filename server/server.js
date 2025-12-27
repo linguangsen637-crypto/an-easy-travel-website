@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { body, param, validationResult } = require('express-validator');
+const { NOTIMP } = require('dns');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -103,14 +104,13 @@ const handleValidationErrors = (req, res, next) => {
 };
 
 // ==================== 静态文件 ====================
-app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(express.static(path.join(__dirname, '..', 'docs')));
 
 // 请求日志
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 });
-
 // ==================== 认证接口 ====================
 
 // 注册
